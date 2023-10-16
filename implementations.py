@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib as plt
-
+import Logistics 
 
 
 def batch_iter(y, tx, batch_size=1, num_batches=1, shuffle=True):
@@ -44,7 +44,6 @@ def compute_loss(y, tx, w):
     Returns:
         the value of the loss (a scalar), corresponding to the input parameters w.
     """
-    ### SOLUTION
     e = y - tx.dot(w)
     return calculate_mse(e)
 
@@ -59,7 +58,6 @@ def compute_gradient(y, tx, w):
     Returns:
         An numpy array of shape (2, ) (same shape as w), containing the gradient of the loss at w.
     """
-    # COmpute the gradient from the MSE 
     
     e = y - np.dot(tx,w)
     return - 1/(y.shape[0])* np.dot(tx.T,e),e
@@ -143,15 +141,26 @@ def least_squares(y, tx):
     b = tx.T.dot(y)
     w = np.linalg.solve(a, b)
     mse = compute_loss(y, tx, w)
+    return w, mse
+
 
 def ridge_regression(y, tx, lambda_ ):
     aI = 2 * tx.shape[0] * lambda_ * np.identity(tx.shape[1])
     a = tx.T.dot(tx) + aI
     b = tx.T.dot(y)
-    return np.linalg.solve(a, b)
+    w = np.linalg.solve(a, b)
+    loss = (y-tx.dot(w))+lambda_ * np.squeeze(w.T.dot(w))
+    
+    return w,loss
+
+
+
+
+
+
+
+def reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma):
+    return Logistics.reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma)
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
-    return NotImplementedError
-
-def reg_logistic_regression(y, tx, _lambda , initial_w, max_iters, gamma):
-    return NotImplementedError
+    return Logistics.logistic_regression(y, tx, initial_w, max_iters, gamma)
