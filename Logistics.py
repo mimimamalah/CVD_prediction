@@ -116,11 +116,12 @@ def learning_by_gradient_descent(y, tx, w, gamma):
 
 
 
+
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
     threshold = 1e-8
     losses = []
     w = initial_w
-    loss=0
+    loss = calculate_loss(y, tx, w)
     # start the logistic regression
     for iter in range(max_iters):
         # get loss and update w.
@@ -146,8 +147,6 @@ def reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma):
     losses = []
 
     w = initial_w
-    loss =0
-
     # start the logistic regression
     for iter in range(max_iters):
         # get loss and update w.
@@ -160,4 +159,5 @@ def reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma):
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
             break
     # visualization
-    return w,loss
+    nonPenalizedLoss = calculate_loss(y, tx, w) 
+    return w,nonPenalizedLoss
