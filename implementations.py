@@ -200,7 +200,7 @@ def ridge_regression(y, tx, lambda_ ):
     a = tx.T.dot(tx) + aI
     b = tx.T.dot(y)
     w = np.linalg.solve(a, b)
-    loss = (y-tx.dot(w))+lambda_ * np.squeeze(w.T.dot(w))
+    loss = (y-tx.dot(w))# Moreover, the loss returned by the regularized methods (ridge regression and reg logistic regression) should not include the penalty term.
     
     return w,loss
 
