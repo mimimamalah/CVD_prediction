@@ -95,9 +95,10 @@ def mean_squared_error_gd(y, tx, initial_w, max_iters, gamma):
         losses: a list of length max_iters containing the loss value (scalar) for each iteration of GD
         w: The lastparameter w of shape (2, ), 
     """
-    ws = [initial_w]
-    losses = []
+
+
     w = initial_w
+    loss=compute_loss(y, tx, w)
     for n_iter in range(max_iters):
      
         grad, err = compute_gradient(y, tx, w)
@@ -106,16 +107,7 @@ def mean_squared_error_gd(y, tx, initial_w, max_iters, gamma):
         w = w - gamma * grad
 
 
-        
-        ws.append(w)
-        losses.append(loss)
-        print(
-            "GD iter. {bi}/{ti}: loss={l}, w0={w0}, w1={w1}".format(
-                bi=n_iter, ti=max_iters - 1, l=loss, w0=w[0], w1=w[1]
-            )
-        )
-
-    return losses, w
+    return w,loss
 
 def mean_squared_error_sgd(y, tx, initial_w, max_iters, gamma):
     """The Stochastic Gradient Descent (GD) algorithm using Mean Square error Loss.
@@ -134,9 +126,8 @@ def mean_squared_error_sgd(y, tx, initial_w, max_iters, gamma):
         w: The lastparameter w of shape (2, ), 
     """
      
-    ws = [initial_w]
-    losses = []
     w = initial_w
+    loss=compute_loss(y, tx, w)
 
     for n_iter in range(max_iters):
 
@@ -151,16 +142,8 @@ def mean_squared_error_sgd(y, tx, initial_w, max_iters, gamma):
             # calculate loss
             loss = compute_loss(y, tx, w)
             # store w and loss
-            ws.append(w)
-            losses.append(loss)
-       
 
-        print(
-            "SGD iter. {bi}/{ti}: loss={l}, w0={w0}, w1={w1}".format(
-                bi=n_iter, ti=max_iters - 1, l=loss, w0=w[0], w1=w[1]
-            )
-        )
-    return losses, w
+    return w,loss
 
 
 
