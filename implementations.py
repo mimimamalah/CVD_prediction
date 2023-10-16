@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib as plt
-import Logistics 
+import Logistics
 
 
 def batch_iter(y, tx, batch_size=1, num_batches=1, shuffle=True):
@@ -33,6 +33,7 @@ def calculate_mse(e):
     """Calculate the mse for vector e."""
     return 1 / 2 * np.mean(e**2)
 
+
 def compute_loss(y, tx, w):
     """Calculate the loss using either MSE or MAE.
 
@@ -47,6 +48,7 @@ def compute_loss(y, tx, w):
     e = y - tx.dot(w)
     return calculate_mse(e)
 
+
 def compute_gradient(y, tx, w):
     """Computes the gradient at w.
 
@@ -58,9 +60,10 @@ def compute_gradient(y, tx, w):
     Returns:
         An numpy array of shape (2, ) (same shape as w), containing the gradient of the loss at w.
     """
-    
-    e = y - np.dot(tx,w)
-    return - 1/(y.shape[0])* np.dot(tx.T,e),e
+
+    e = y - np.dot(tx, w)
+    return -1 / (y.shape[0]) * np.dot(tx.T, e), e
+
 
 def compute_stoch_gradient(y, tx, w):
     """Compute a stochastic gradient at w from just few examples n and their corresponding y_n labels.
@@ -80,7 +83,6 @@ def compute_stoch_gradient(y, tx, w):
     return grad, err
 
 
-
 def mean_squared_error_gd(y, tx, initial_w, max_iters, gamma):
     """The Gradient Descent (GD) algorithm using Mean Square error Loss.
 
@@ -93,20 +95,19 @@ def mean_squared_error_gd(y, tx, initial_w, max_iters, gamma):
 
     Returns:
         losses: a list of length max_iters containing the loss value (scalar) for each iteration of GD
-        w: The lastparameter w of shape (2, ), 
+        w: The lastparameter w of shape (2, ),
     """
 
-
     w = initial_w
-    
+
     for n_iter in range(max_iters):
-     
         grad, err = compute_gradient(y, tx, w)
-       
+
         w = w - gamma * grad
 
-    loss=compute_loss(y, tx, w)
-    return w,loss
+    loss = compute_loss(y, tx, w)
+    return w, loss
+
 
 def mean_squared_error_sgd(y, tx, initial_w, max_iters, gamma):
     """The Stochastic Gradient Descent (GD) algorithm using Mean Square error Loss.
@@ -122,28 +123,23 @@ def mean_squared_error_sgd(y, tx, initial_w, max_iters, gamma):
 
     Returns:
         losses: a list of length max_iters containing the loss value (scalar) for each iteration of GD
-        w: The lastparameter w of shape (2, ), 
+        w: The lastparameter w of shape (2, ),
     """
-     
+
     w = initial_w
-    loss=compute_loss(y, tx, w)
+    loss = compute_loss(y, tx, w)
 
     for n_iter in range(max_iters):
-
-      
-        for y_batch, tx_batch in batch_iter(
-            y, tx, batch_size=1, num_batches=1
-        ):
+        for y_batch, tx_batch in batch_iter(y, tx, batch_size=1, num_batches=1):
             # compute a stochastic gradient and loss
-            grad, _= compute_stoch_gradient(y_batch, tx_batch, w)
+            grad, _ = compute_stoch_gradient(y_batch, tx_batch, w)
             # update w through the stochastic gradient update
             w = w - gamma * grad
             # calculate loss
             loss = compute_loss(y, tx, w)
             # store w and loss
 
-    return w,loss
-
+    return w, loss
 
 
 def least_squares(y, tx):
@@ -166,13 +162,13 @@ def least_squares(y, tx):
     return w, mse
 
 
-def ridge_regression(y, tx, lambda_ ):
+def ridge_regression(y, tx, lambda_):
     """implement ridge regression.
 
     Args:
         y: numpy array of shape (N,), N is the number of samples.
         tx: numpy array of shape (N,D), D is the number of features.
-        lambda_:scalar :  regularisation parameter 
+        lambda_:scalar :  regularisation parameter
 
     Returns:
         w: optimal weights, numpy array of shape(D,), D is the number of features.
@@ -182,26 +178,23 @@ def ridge_regression(y, tx, lambda_ ):
     a = tx.T.dot(tx) + aI
     b = tx.T.dot(y)
     w = np.linalg.solve(a, b)
-    loss = compute_loss(y,tx,w)# Moreover, the loss returned by the regularized methods (ridge regression and reg logistic regression) should not include the penalty term.
-    
-    return w,loss
+    loss = compute_loss(
+        y, tx, w
+    )  # Moreover, the loss returned by the regularized methods (ridge regression and reg logistic regression) should not include the penalty term.
+
+    return w, loss
 
 
-
-
-
-
-
-def reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma):
+def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     """
     Perform Regularized Logisitc regression for @max_iters iterations
-    
+
     Return the loss and the updated w.
 
     Args:
         y:  shape=(N, 1)
         tx: shape=(N, D)
-        lambda_:scalar :  regularisation parameter 
+        lambda_:scalar :  regularisation parameter
         initial_w: numpy array of shape=(2, ). The initial guess (or the initialization) for the model parameters
         max_iters: a scalar denoting the total number of iterations of GD
         gamma: a scalar denoting the stepsize
@@ -211,13 +204,16 @@ def reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma):
         w: shape=(D, 1)
 
     """
-          
-    return Logistics.reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma)
+
+    return Logistics.reg_logistic_regression(
+        y, tx, lambda_, initial_w, max_iters, gamma
+    )
+
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
     """
     Perform Logisitc regression for @max_iters iterations
-    
+
     Return the loss and the updated w.
 
     Args:
