@@ -13,7 +13,8 @@ def sigmoid(t):
 
     """
 
-    return 1./(1.+np.exp(-t))
+    return 1.0 / (1.0 + np.exp(-t))
+
 
 def calculate_gradient(y, tx, w):
     """compute the gradient of loss for the negative log likelyhood loss.
@@ -27,10 +28,11 @@ def calculate_gradient(y, tx, w):
         a vector of shape (D, 1)
     """
 
-    N =  y.shape[0]
+    N = y.shape[0]
     pred = sigmoid(tx.dot(w))
-    grad =1/N* tx.T.dot(pred - y) 
+    grad = 1 / N * tx.T.dot(pred - y)
     return grad
+
 
 def calculate_loss(y, tx, w):
     """compute the cost by negative log likelihood.
@@ -46,10 +48,10 @@ def calculate_loss(y, tx, w):
     assert y.shape[0] == tx.shape[0]
     assert tx.shape[1] == w.shape[0]
 
-    N= y.shape[0]
+    N = y.shape[0]
     inner_prod = tx.dot(w)
     sig_prod = sigmoid(inner_prod)
-    return -1/N * (y*np.log(sig_prod)+(1-y)*np.log(1-sig_prod)).sum()
+    return -1 / N * (y * np.log(sig_prod) + (1 - y) * np.log(1 - sig_prod)).sum()
 
 
 def penalized_logistic_regression(y, tx, w, lambda_):
@@ -90,7 +92,7 @@ def learning_by_penalized_gradient(y, tx, w, gamma, lambda_):
     """
 
     loss, gradient = penalized_logistic_regression(y, tx, w, lambda_)
-    w =w- gamma * gradient
+    w = w - gamma * gradient
     return loss, w
 
 
@@ -111,10 +113,8 @@ def learning_by_gradient_descent(y, tx, w, gamma):
     """
     grad = calculate_gradient(y, tx, w)
     loss = calculate_loss(y, tx, w)
-    w = w-grad*gamma
-    return loss,w
-
-
+    w = w - grad * gamma
+    return loss, w
 
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
@@ -134,15 +134,10 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
             break
     # visualization
-    return w,loss
+    return w, calculate_loss(y, tx, w)
 
 
-
-
-
-
-
-def reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma):
+def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     threshold = 1e-8
     losses = []
 
@@ -159,5 +154,5 @@ def reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma):
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
             break
     # visualization
-    nonPenalizedLoss = calculate_loss(y, tx, w) 
-    return w,nonPenalizedLoss
+    nonPenalizedLoss = calculate_loss(y, tx, w)
+    return w, nonPenalizedLoss
