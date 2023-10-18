@@ -381,16 +381,14 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         loss: the corresponding loss value of the last weight vector
     """
     # init parameters
-    max_iter = 10000
     threshold = 1e-8
     gamma = 0.5
     losses = []
 
-    # build tx
-    w = np.zeros((tx.shape[1], 1))
+    w = initial_w
 
     # start the logistic regression
-    for iter in range(max_iter):
+    for iter in range(max_iters):
         # get loss and update w.
         loss, w = learning_by_gradient_descent(y, tx, w, gamma)
         # converge criterion
@@ -418,18 +416,16 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
         loss: the corresponding loss value of the last weight vector
     """
     # init parameters
-    max_iter = 10000
     gamma = 0.5
-    lambda_ = 0.0005
     threshold = 1e-8
     losses = []
 
     # build tx
-    tx = np.c_[np.ones((y.shape[0], 1)), x]
-    w = np.zeros((tx.shape[1], 1))
+
+    w = initial_w
 
     # start the logistic regression
-    for iter in range(max_iter):
+    for iter in range(max_iters):
         # get loss and update w.
         loss, w = learning_by_penalized_gradient(y, tx, w, gamma, lambda_)
         # converge criterion
