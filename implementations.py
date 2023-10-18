@@ -122,8 +122,8 @@ def calculate_loss(y, tx, w):
     assert tx.shape[1] == w.shape[0]
 
     sig = sigmoid(tx.dot(w))
-    loss = y * (np.log(sig)) + (1 - y) * (np.log(1 - sig))
-    return -loss.sum().item() / y.shape[0]
+    loss = (y * (np.log(sig)) + (1 - y) * (np.log(1 - sig))).sum()
+    return -loss / y.shape[0]
 
 
 def calculate_gradient(y, tx, w):
