@@ -150,6 +150,7 @@ def calculate_gradient(y, tx, w):
     loss = tx.T.dot(y - sig)
     return -loss / y.shape[0]
 
+
 def learning_by_gradient_descent(y, tx, w, gamma):
     """
     Do one step of gradient descent using logistic regression. Return the loss and the updated w.
@@ -176,11 +177,11 @@ def learning_by_gradient_descent(y, tx, w, gamma):
            [0.17932896],
            [0.24828716]])
     """
-    # compute gradient 
+    # compute gradient
     loss = calculate_loss(y, tx, w)
     gradient = calculate_gradient(y, tx, w)
     # update w by gradient
-    w = w - gamma * gradient 
+    w = w - gamma * gradient
     return loss, w
 
 
@@ -349,7 +350,6 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     for n_iter in range(max_iters):
         # implement stochastic gradient descent.
         loss, w = learning_by_gradient_descent(y, tx, w, gamma)
-    
 
     loss = calculate_loss(y, tx, w)
     return w, loss
