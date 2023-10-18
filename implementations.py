@@ -415,6 +415,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
         loss: the corresponding loss value of the last weight vector
     """
     # init parameters
+
     threshold = 1e-8
     losses = []
 
