@@ -151,6 +151,40 @@ def calculate_gradient(y, tx, w):
     return -loss / y.shape[0]
 
 
+def learning_by_gradient_descent(y, tx, w, gamma):
+    """
+    Do one step of gradient descent using logistic regression. Return the loss and the updated w.
+
+    Args:
+        y:  shape=(N, 1)
+        tx: shape=(N, D)
+        w:  shape=(D, 1)
+        gamma: float
+
+    Returns:
+        loss: scalar number
+        w: shape=(D, 1)
+
+    >>> y = np.c_[[0., 1.]]
+    >>> tx = np.arange(6).reshape(2, 3)
+    >>> w = np.array([[0.1], [0.2], [0.3]])
+    >>> gamma = 0.1
+    >>> loss, w = learning_by_gradient_descent(y, tx, w, gamma)
+    >>> round(loss, 8)
+    0.62137268
+    >>> w
+    array([[0.11037076],
+           [0.17932896],
+           [0.24828716]])
+    """
+    # compute gradient
+    loss = calculate_loss(y, tx, w)
+    gradient = calculate_gradient(y, tx, w)
+    # update w by gradient
+    w = w - gamma * gradient
+    return loss, w
+
+
 def penalized_logistic_regression(y, tx, w, lambda_):
     """return the loss and gradient.
 
@@ -182,6 +216,43 @@ def penalized_logistic_regression(y, tx, w, lambda_):
     gradient = calculate_gradient(y, tx, w) + 2 * lambda_ * w
 
     return loss, gradient
+
+
+def learning_by_penalized_gradient(y, tx, w, gamma, lambda_):
+    """
+    Do one step of gradient descent, using the penalized logistic regression.
+    Return the loss and updated w.
+
+    Args:
+        y:  shape=(N, 1)
+        tx: shape=(N, D)
+        w:  shape=(D, 1)
+        gamma: scalar
+        lambda_: scalar
+
+    Returns:
+        loss: scalar number
+        w: shape=(D, 1)
+
+    >>> np.set_printoptions(8)
+    >>> y = np.c_[[0., 1.]]
+    >>> tx = np.arange(6).reshape(2, 3)
+    >>> w = np.array([[0.1], [0.2], [0.3]])
+    >>> lambda_ = 0.1
+    >>> gamma = 0.1
+    >>> loss, w = learning_by_penalized_gradient(y, tx, w, gamma, lambda_)
+    >>> round(loss, 8)
+    0.63537268
+    >>> w
+    array([[0.10837076],
+           [0.17532896],
+           [0.24228716]])
+    """
+    # return loss, gradient
+    loss, gradient = penalized_logistic_regression(y, tx, w, lambda_)
+    # update w:
+    w = w - gamma * gradient
+    return loss, w
 
 
 # function 1
@@ -296,7 +367,7 @@ def ridge_regression(y, tx, lambda_):
 
 # function 5
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
-    """Logistic regression using SGD.
+    """Logistic regression using GD.
 
     Args:
         y: numpy array of shape=(N, )
@@ -309,18 +380,24 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         w: last weight vector of the method
         loss: the corresponding loss value of the last weight vector
     """
-    batch_size = 1
-    w = initial_w
-    N = y.shape[0]
+    # init parameters
+    max_iter = 10000
+    threshold = 1e-8
+    gamma = 0.5
+    losses = []
 
-    for n_iter in range(max_iters):
-        # implement stochastic gradient descent.
-        gradient = 0
+    # build tx
+    tx = np.c_[np.ones((y.shape[0], 1)), x]
+    w = np.zeros((tx.shape[1], 1))
 
-        for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
-            gradient += calculate_gradient(minibatch_y, minibatch_tx, w)
-
-        w = w - gamma * gradient
+    # start the logistic regression
+    for iter in range(max_iter):
+        # get loss and update w.
+        loss, w = learning_by_gradient_descent(y, tx, w, gamma)
+        # converge criterion
+        losses.append(loss)
+        if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
+            break
 
     loss = calculate_loss(y, tx, w)
     return w, loss
@@ -328,7 +405,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
 
 # function 6
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
-    """Regularized logistic regression using SGD, with regularization term.
+    """Regularized logistic regression using GD, with regularization term.
 
     Args:
         y: numpy array of shape=(N, )
@@ -341,21 +418,25 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
         w: last weight vector of the method
         loss: the corresponding loss value of the last weight vector
     """
-    batch_size = 1
-    w = initial_w
-    N = y.shape[0]
+    # init parameters
+    max_iter = 10000
+    gamma = 0.5
+    lambda_ = 0.0005
+    threshold = 1e-8
+    losses = []
 
-    for n_iter in range(max_iters):
-        # implement stochastic gradient descent.
-        gradient = 0
+    # build tx
+    tx = np.c_[np.ones((y.shape[0], 1)), x]
+    w = np.zeros((tx.shape[1], 1))
 
-        for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
-            loss, gradient = penalized_logistic_regression(
-                minibatch_y, minibatch_tx, w, lambda_
-            )
-            gradient += gradient
-
-        w = w - gamma * gradient
+    # start the logistic regression
+    for iter in range(max_iter):
+        # get loss and update w.
+        loss, w = learning_by_penalized_gradient(y, tx, w, gamma, lambda_)
+        # converge criterion
+        losses.append(loss)
+        if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
+            break
 
     loss = calculate_loss(y, tx, w)
     return w, loss
