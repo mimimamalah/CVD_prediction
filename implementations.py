@@ -122,8 +122,8 @@ def calculate_loss(y, tx, w):
     assert tx.shape[1] == w.shape[0]
 
     sig = sigmoid(tx.dot(w))
-    loss = y.T.dot(np.log(sig)) + (1 - y).T.dot(np.log(1 - sig))
-    return -loss.item() / y.shape[0]
+    loss = y * (np.log(sig)) + (1 - y) * (np.log(1 - sig))
+    return -loss.sum().item() / y.shape[0]
 
 
 def calculate_gradient(y, tx, w):
@@ -382,7 +382,6 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     """
     # init parameters
     threshold = 1e-8
-    gamma = 0.5
     losses = []
 
     w = initial_w
@@ -416,7 +415,6 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
         loss: the corresponding loss value of the last weight vector
     """
     # init parameters
-    gamma = 0.5
     threshold = 1e-8
     losses = []
 
