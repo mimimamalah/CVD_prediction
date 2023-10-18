@@ -387,7 +387,6 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     losses = []
 
     # build tx
-    tx = np.c_[np.ones((y.shape[0], 1)), x]
     w = np.zeros((tx.shape[1], 1))
 
     # start the logistic regression
