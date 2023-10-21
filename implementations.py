@@ -189,10 +189,19 @@ def least_squares(y, tx):
     Returns:
         w: optimal weights, numpy array of shape(D,), D is the number of features.
         mse: Mean square error obtain with the returned weight .
-    """
 
+
+    """
     a = tx.T.dot(tx)
     b = tx.T.dot(y)
+
+    if(np.linalg.det(a)==0):
+        a_pseudo_inv = np.linalg.pinv(a)
+        w = a_pseudo_inv.dot(b)
+        mse = compute_loss(y, tx, w)
+        return w, mse
+    
+
     w = np.linalg.solve(a, b)
     mse = compute_loss(y, tx, w)
     return w, mse
@@ -247,6 +256,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
 
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
+    print("aaaaa")
     """
     Perform Logisitc regression for @max_iters iterations
 

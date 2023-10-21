@@ -13,6 +13,7 @@ def sigmoid(t):
 
     """
 
+    t= np.clip(t,-700,700)
     return 1.0 / (1.0 + np.exp(-t))
 
 
@@ -50,8 +51,15 @@ def calculate_loss(y, tx, w):
 
     N = y.shape[0]
     inner_prod = tx.dot(w)
+
+
+
     sig_prod = sigmoid(inner_prod)
-    return -1 / N * (y * np.log(sig_prod) + (1 - y) * np.log(1 - sig_prod)).sum()
+
+
+    #Assert small constant to avoid logarithmic instability 
+    epsilon = 1e-15
+    return -1 / N * (y * np.log(sig_prod + epsilon) + (1 - y) * np.log(1 - sig_prod+epsilon)).sum()
 
 
 def penalized_logistic_regression(y, tx, w, lambda_):
@@ -119,11 +127,11 @@ def learning_by_gradient_descent(y, tx, w, gamma):
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
 
-    print("initial w : ",initial_w)
+    #print("initial w : ",initial_w)
+    print("uwu")
 
 
 
-    threshold = 1e-8
     losses = []
     w = initial_w
     loss = calculate_loss(y, tx, w)
@@ -137,8 +145,6 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
             print("Current iteration=={i}, loss={l}".format(i=iter, l=loss))
         # converge criterion
         losses.append(loss)
-        if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
-            break
     # visualization
     return w, calculate_loss(y, tx, w)
 
