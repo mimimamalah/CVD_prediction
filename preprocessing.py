@@ -122,6 +122,17 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
     x_new_del_test = np.delete(x_new_test, indice_to_delete, 1)
 
 
+
+    for i in range(x_new_del_train.shape[1]):
+        mean_train = x_new_del_train[:,i].mean()
+        std_train = x_new_del_train[:,i].std()
+        mean_test = x_new_del_test[:,i].mean()
+        std_test = x_new_del_test[:,i].std()
+        if(mean_train>1.1):
+            x_new_del_train[:,i] = (x_new_del_train[:,i]-mean_train)/std_train
+            x_new_del_test[:,i] = (x_new_del_test[:,i]-mean_test)/std_test
+
+
     x_train_preprocess = np.hstack((x_new_del_train, x_append_train))
     x_test_preprocess = np.hstack((x_new_del_test, x_append_test))
 
