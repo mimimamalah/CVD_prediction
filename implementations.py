@@ -162,7 +162,8 @@ def mean_squared_error_sgd(y, tx, initial_w, max_iters, gamma):
         w: The lastparameter w of shape (2, ),
     """
 
-    w = initial_w
+    w = initial_w.reshape(-1,1)
+    y = y.reshape(-1,1)
     loss = compute_loss(y, tx, w)
 
     for n_iter in range(max_iters):
@@ -256,7 +257,6 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
 
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
-    print("aaaaa")
     """
     Perform Logisitc regression for @max_iters iterations
 

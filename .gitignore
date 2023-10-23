@@ -1,0 +1,10 @@
+
+.DS_Store
+dataset/x_test.csv
+dataset/x_train.csv
+dataset/y_train.csv
+Submission/Submission.csv
+Submission/Submission1.csv
+Submission/Submission2.csv
+Submission/Submission3.csv
+Submission/Submission4.csv
