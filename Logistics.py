@@ -137,11 +137,10 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         # log info
         if iter % 100 == 0:
             #print(w.shape)
-            print("Current iteration=={i}, loss={l}".format(i=iter, l=loss))
+            print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
         # converge criterion
         losses.append(loss)
-        if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
-            break
+
     # visualization
     loss = calculate_loss(y, tx, w)
     return w, loss

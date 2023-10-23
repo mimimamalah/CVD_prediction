@@ -65,7 +65,7 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
     variables_for_process10 = ["EXERHMM1", "EXERHMM2"]
     proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process10, process_10)
 
-    variables_for_process11 = ["BLDSUGAR", "FEETCHK2"]
+    variables_for_process11 = ["BLDSUGAR", "FEETCHK2","LONGWTCH"]
     proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process11, process_11)
 
     variables_for_process12 = ["DOCTDIAB", "CHKHEMO3", "FEETCHK"]
@@ -77,7 +77,7 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
     variables_for_process14 = ["JOINPAIN"]
     proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process14, process_14)
 
-    variables_for_process15 = ["EYEEXAM","ARTTODAY","SCNTMNY1","SCNTMEL1","SCNTPAID","_EDUCAG","_INCOMG","_SMOKER3","_PACAT1"]
+    variables_for_process15 = ["EYEEXAM","ARTTODAY","SCNTMNY1","SCNTMEL1","SCNTPAID","_EDUCAG","_INCOMG","_SMOKER3","_PACAT1","CHOLCHK"]
     proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process15, process_15)
 
 
@@ -113,6 +113,13 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
 
 
 
+
+    variables_for_process25 = ["_STRWT","_RAWRAKE","_WT2RAKE"]
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process25, process_25)
+
+
+
+
     indice_to_delete = [feature_names.index(item) for item in collumns_to_delete]
 
     indice_to_delete.sort()
@@ -124,10 +131,10 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
 
 
     for i in range(x_new_del_train.shape[1]):
-        mean_train = x_new_del_train[:,i].mean()
-        std_train = x_new_del_train[:,i].std()
-        mean_test = x_new_del_test[:,i].mean()
-        std_test = x_new_del_test[:,i].std()
+        mean_train =    x_new_del_train[:,i].mean()
+        std_train =     x_new_del_train[:,i].std()
+        mean_test =     x_new_del_test[:,i].mean()
+        std_test =      x_new_del_test[:,i].std()
         if(mean_train>1.1):
             x_new_del_train[:,i] = (x_new_del_train[:,i]-mean_train)/std_train
             x_new_del_test[:,i] = (x_new_del_test[:,i]-mean_test)/std_test
@@ -251,13 +258,16 @@ def data_cleaning_NaN(x_train, columns, threshold=0.6):
 
 
 def get_collumns_to_delete(collumns_to_delete,oneHotp2):
+
+
+
     array_to_drop_Useless = ["_STATE","_PSU","SEQNO","CTELENUM","STATERES","CELLFON3","DISPCODE","PVTRESD1","CTELNUM1","CELLFON2",
-                             "PVTRESD2","LANDLINE","HHADULT","NUMHHOL2","IMFVPLAC","WHRTST10","NUMADULT" , "NUMMEN" , 
-                             "NUMWOMEN","RCSGENDR","RCSRLTN2","QSTVER","QSTLANG","MSCODE","_STSTR","_STRWT","_RAWRAKE",
-                             "_WT2RAKE","_CHISPNC","_CLLCPWT","_DUALUSE","_DUALCOR","_AGE_G","HTIN4","WTKG3","HTM4",
+                             "PVTRESD2","LANDLINE","HHADULT","NUMHHOL2","NUMADULT" , "NUMMEN" , 
+                             "NUMWOMEN","RCSGENDR","RCSRLTN2","QSTVER","QSTLANG","MSCODE","_STSTR",                             
+                             "_CHISPNC","_CLLCPWT","_DUALCOR","HTIN4","WTKG3","HTM4",
                              "_MISFRTN","_MISVEGN","_FRTRESP","_VEGRESP","_FRT16","_VEG23","_FRUITEX","_VEGETEX",
-                             "PAMISS1_","_LMTSCL1","_RFSEAT2","_RFSEAT3","_FLSHOT6","_PNEUMO2","_AIDTST3","CHOLCHK",
-                             "FLSHTMY2","FEETCHK2","FEETCHK","LONGWTCH","CAREGIV1","EXRACT11","EXRACT21"]
+                             "PAMISS1_","_RFSEAT2","_AIDTST3",
+                             "FLSHTMY2","FEETCHK2","FEETCHK","CAREGIV1","EXRACT11","EXRACT21"]
 
     array_to_drop_redundant = ["IDATE","FMONTH","IYEAR"] #IYEAR is useless , 99% in 2015
 
@@ -276,7 +286,7 @@ def get_collumns_to_delete(collumns_to_delete,oneHotp2):
                                   "ADANXEV","_CRACE1","_CPRACE","_RFHLTH","_HCVU651","_RFHYPE5","_CHOLCHK","_RFCHOL","_LTASTH1","_CASTHM1",
                                   "_ASTHMS1","_DRDXAR1","_PRACE1","_MRACE1","_HISPANC","_RACE","_RACEG21","_RACEGR3","_RACE_G1",
                                   "_AGEG5YR","_AGE65YR","_BMI5CAT","_RFBMI5","_CHLDCNT","_RFSMOK3","DRNKANY5","_RFBING5","_RFDRHV5","_FRTLT1","_VEGLT1","_TOTINDA","ACTIN11_","ACTIN21_",
-                                  "_PAINDX1","_PAREC1",
+                                  "_PAINDX1","_PAREC1","IMFVPLAC","WHRTST10","_DUALUSE","_AGE_G","_LMTSCL1","_RFSEAT3","_FLSHOT6","_PNEUMO2"
                                   ]
 
     collumns_to_delete = collumns_to_delete+array_to_drop_Useless+ array_to_drop_redundant+ array_to_drop_too_many_missing+ collumns_to_delete_from_one_hot
@@ -300,8 +310,8 @@ def oneHotEncoding(feature_names, x_append_train, x_append_test, x_train, x_test
                                        ("_RACEGR3",5,[9]),("_AGEG5YR",13,[14]),("_AGE65YR",2,[3]),("_RFBMI5",2,[9]),("_CHLDCNT",6,[9]),("_RFSMOK3",2,[9]),
                                        ("DRNKANY5",2,[7,9]),("_RFBING5",2,[9]),("_RFDRHV5",2,[9]),("_FRTLT1",2,[9]),("_VEGLT1",2,[9]),("_TOTINDA",2,[9]),
                                        ("_PAINDX1",2,[9]),("_PAREC1",4,[9]),("PERSDOC2",3,[7,9]),("SMOKDAY2",3,[7,9]),("BPHIGH4",4,[7,9]),("DIABETE3",4,[7,9]),
-                                       ("PREDIAB1",3,[7,9])
-                                   ]
+                                       ("PREDIAB1",3,[7,9]),("IMFVPLAC",11,[77,99]),("WHRTST10",9,[77,99]),("_DUALUSE",2,[9]),("_AGE_G",6,[]),("_LMTSCL1",4,[9]),
+                                       ("_RFSEAT3",2,[9]),("_FLSHOT6",2,[9]),("_PNEUMO2",2,[9])]
 
     for col in collumn_to_oneHotEncode:
         indice = [i for i, item in enumerate(feature_names) if item.find(col) != -1][0]
@@ -691,6 +701,7 @@ def process_11(column):
         201 - 299   : Times per week
         301 - 399   : Times per month
         401 - 499   : Times per year
+        555         : all
         777         : Don't know / Not sure
         888         :Never
         999         :Refused
@@ -716,6 +727,7 @@ def process_11(column):
             new_column[i] = new_column[i] - 400
         elif (new_column[i] == 300) or (new_column[i] == 555):
             new_column[i] = 0
+    
 
     filtered_elements = [x for x in new_column if 0 <= x <= 99]
     median = np.median(filtered_elements)
@@ -1105,4 +1117,19 @@ def process_24(column):
         if np.isnan(new_column[i]):
             new_column[i] = median
 
+    return new_column
+
+
+def process_25(column):
+    """
+    Preprocess continues data 
+    
+    """
+    new_column = column.copy()
+
+    filtered_elements = [x for x in new_column if not np.isnan(x)]
+    median = np.median(filtered_elements)
+    for i in range(len(new_column)):
+        if (np.isnan(new_column[i])):
+            new_column[i] = median
     return new_column
