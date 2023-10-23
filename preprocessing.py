@@ -249,7 +249,7 @@ def data_cleaning_NaN(x_train, columns, threshold=0.6):
 
 
 def get_collumns_to_delete(oneHotp2):
-    array_to_drop_Useless = ["_PSU","SEQNO","CTELENUM","STATERES","CELLFON3","DISPCODE","PVTRESD1","CTELNUM1","CELLFON2",
+    array_to_drop_Useless = ["_STATE","_PSU","SEQNO","CTELENUM","STATERES","CELLFON3","DISPCODE","PVTRESD1","CTELNUM1","CELLFON2",
                              "PVTRESD2","LANDLINE","HHADULT","NUMHHOL2","IMFVPLAC","WHRTST10","NUMADULT" , "NUMMEN" , 
                              "NUMWOMEN","RCSGENDR","RCSRLTN2","QSTVER","QSTLANG","MSCODE","_STSTR","_STRWT","_RAWRAKE",
                              "_WT2RAKE","_CHISPNC","_CLLCPWT","_DUALUSE","_DUALCOR","_AGE_G","HTIN4","WTKG3","HTM4",
@@ -265,7 +265,7 @@ def get_collumns_to_delete(oneHotp2):
                                      "ASRCHKUP","ASACTLIM","ASYMPTOM","ASNOSLEP","ASTHMED3","ASINHALR","PCPSADE1","PCDMDECN"]
 
     # Collumns that are oneHot encoded should be removed from the dataset
-    collumns_to_delete_from_one_hot =["_STATE","IMONTH","IDAY",
+    collumns_to_delete_from_one_hot =["IMONTH","IDAY",
                                   "SEX","MARITAL","EDUCA","RENTHOM1","EMPLOY1","INCOME2","GENHLTH",
                                   "PERSDOC2","SMOKDAY2",
                                   "BPHIGH4","DIABETE3","PREDIAB1",
@@ -290,7 +290,7 @@ def get_collumns_to_delete(oneHotp2):
 
 
 def oneHotEncoding(feature_names, x_append_train, x_append_test, x_train, x_test):
-    collumn_to_oneHotEncode = ["_STATE","IMONTH","IDAY","SEX","_DRDXAR1","_RACE_G1","_BMI5CAT","ACTIN11_","ACTIN21_"]
+    collumn_to_oneHotEncode = ["IMONTH","IDAY","SEX","_DRDXAR1","_RACE_G1","_BMI5CAT","ACTIN11_","ACTIN21_"]
 
     collumn_to_oneHotencode_special = [("MARITAL",6,[9]),("EDUCA",6,[9]),("RENTHOM1",3,[7,9]),("EMPLOY1",8,[9]),("INCOME2",8,[77,99]),
                                        ("GENHLTH",5,[7,9]),("HAREHAB1",2,[7,9]),("STREHAB1",2,[7,9]),("CVDASPRN",2,[7,9]),("ASPUNSAF",3,[7,9]),
