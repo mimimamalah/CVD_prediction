@@ -111,7 +111,7 @@ def compute_stoch_gradient(y, tx, w):
         An array of shape (D,1) (same shape as w), containing the stochastic gradient of the loss at w.
     """
 
-    ### SOLUTION
+
     err = y - tx.dot(w)
     grad = -tx.T.dot(err) / len(err)
     return grad, err
@@ -133,7 +133,8 @@ def mean_squared_error_gd(y, tx, initial_w, max_iters, gamma):
         w: The lastparameter w of shape (D,1),
     """
 
-    w = initial_w
+    w = initial_w.reshape(-1,1)
+    y = y.reshape(-1,1)
 
     for n_iter in range(max_iters):
         grad, err = compute_gradient(y, tx, w)
