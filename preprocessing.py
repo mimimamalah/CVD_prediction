@@ -13,13 +13,13 @@ collp2 = ["HLTHPLN1", "MEDCOST", "BPMEDS", "BLOODCHO", "TOLDHI2","CVDSTRK3",
                    "_PA30021","_PASTRNG","_PASTAE1"]
 
 
-def dataPreprocess():
+def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
     ##defines if Yes-No question are one Hot encoded or No->0 , Yes->1 encoded
     oneHotp2 = True
 
-    x_train, x_test, y_train, columns, feature_names = generate_data()
+    
     collumns_to_delete = data_cleaning_NaN(x_train, columns, threshold=0.6)
-    collumns_to_delete += get_collumns_to_delete(oneHotp2)
+    collumns_to_delete += get_collumns_to_delete(collumns_to_delete,oneHotp2)
 
     x_new_train = np.copy(x_train)
     x_append_train = np.empty((x_train.shape[0], 0))
@@ -27,26 +27,26 @@ def dataPreprocess():
     x_new_test = np.copy(x_test)
     x_append_test = np.empty((x_test.shape[0], 0))
 
-    oneHotEncoding(feature_names, x_append_train, x_append_test, x_train, x_test)
-    process2bis(feature_names, x_append_train, x_append_test, x_train, x_test, oneHot)
+    x_append_train ,x_append_test=  oneHotEncoding(feature_names, x_append_train, x_append_test, x_train, x_test)
+    x_append_train ,x_append_test=  process2bis(feature_names, x_append_train, x_append_test, x_train, x_test, oneHotp2)
 
     variables_for_process_HLTH = ["PHYSHLTH", "MENTHLTH", "POORHLTH"]
-    proccess_columns(variables_for_process_HLTH, process_HLTH)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process_HLTH, process_HLTH)
 
     variables_for_process3 = ["CHECKUP1", "CHOLCHK"]
-    proccess_columns(variables_for_process3, process_3)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process3, process_3)
 
     variables_for_process4 = ["DIABAGE2"]
-    proccess_columns(variables_for_process4, process_4)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process4, process_4)
 
     variables_for_process5 = ["CHILDREN"]
-    proccess_columns(variables_for_process5, process_5)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process5, process_5)
 
-    proccess_columns(["WEIGHT2"], process_6_weight)
-    proccess_columns(["HEIGHT3"], process_6_height)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,["WEIGHT2"], process_6_weight)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,["HEIGHT3"], process_6_height)
 
     variables_for_process7 = ["ALCDAY5", "EXEROFT1", "EXEROFT2", "STRENGTH"]
-    proccess_columns(variables_for_process7, process_7)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process7, process_7)
 
     variables_for_process8 = ["AVEDRNK2", "DRNK3GE5", "MAXDRNKS"]
     indice_ALCDAY5 = [
@@ -60,69 +60,80 @@ def dataPreprocess():
         x_new_test[:, indice] = process_8(x_test[:, indice], x_test[:, indice_ALCDAY5])
 
     variables_for_process9 = ["FRUITJU1","FRUIT1","FVBEANS","FVGREEN","FVORANG","VEGETAB1"]
-    proccess_columns(variables_for_process9, process_9)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process9, process_9)
 
     variables_for_process10 = ["EXERHMM1", "EXERHMM2"]
-    proccess_columns(variables_for_process10, process_10)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process10, process_10)
 
     variables_for_process11 = ["BLDSUGAR", "FEETCHK2"]
-    proccess_columns(variables_for_process11, process_11)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process11, process_11)
 
     variables_for_process12 = ["DOCTDIAB", "CHKHEMO3", "FEETCHK"]
-    proccess_columns(variables_for_process12, process_12)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process12, process_12)
 
     variables_for_process13 = ["USENOW3","ARTHSOCL","SMOKDAY2","_PA150R2","_PA300R2","_LMTACT1","_LMTWRK1"]
-    proccess_columns(variables_for_process13, process_13)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process13, process_13)
 
     variables_for_process14 = ["JOINPAIN"]
-    proccess_columns(variables_for_process14, process_14)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process14, process_14)
 
     variables_for_process15 = ["EYEEXAM","ARTTODAY","SCNTMNY1","SCNTMEL1","SCNTPAID","_EDUCAG","_INCOMG","_SMOKER3","_PACAT1"]
-    proccess_columns(variables_for_process15, process_15)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process15, process_15)
 
 
     variables_for_process16 = ["SEATBELT","CDHOUSE","CDASSIST","CDHELP","CDSOCIAL","HOWLONG",
                            "LASTPAP2","HPLSTTST","LENGEXAM","LSTBLDS3","LASTSIG3","PSATIME","PCPSARS1",
                            "EMTSUPRT","LSATISFY"]
-    proccess_columns(variables_for_process16, process_16)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process16, process_16)
 
     variables_for_process17 = ["LASTSMK2"]
-    proccess_columns(variables_for_process17, process_17)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process17, process_17)
 
     variables_for_process18 = ["ASTHMAGE"]
-    proccess_columns(variables_for_process18, process_18)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process18, process_18)
 
     variables_for_process19 = ["SCNTWRK1", "SCNTLWK1"]
-    proccess_columns(variables_for_process19, process_19)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process19, process_19)
 
     variables_for_process20 = ["ADPLEASR","ADDOWN","ADSLEEP","ADENERGY","ADEAT1","ADFAIL","ADTHINK","ADMOVE"]
-    proccess_columns(variables_for_process20, process_20)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process20, process_20)
 
     variables_for_process21 = ["GRENDAY_","ORNGDAY_","VEGEDA1_","FTJUDA1_","FRUTDA1_","BEANDAY_","_FRUTSUM","_VEGESUM","PADUR1_","PADUR2_",
                            "_MINAC11","_MINAC21","PAMIN11_","PAMIN21_","PA1MIN_","PAVIG11_","PAVIG21_","PA1VIGM_"]
-    proccess_columns(variables_for_process21, process_21)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process21, process_21)
 
     variables_for_process22 = ["METVL11_", "METVL21_"]
-    proccess_columns(variables_for_process22, process_22)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process22, process_22)
 
     variables_for_process23 = ["MAXVO2_", "FC60_", "PAFREQ1_", "PAFREQ2_", "STRFREQ_"]
-    proccess_columns(variables_for_process23, process_23)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process23, process_23)
 
     variables_for_process24 = ["_BMI5"]
-    proccess_columns(variables_for_process24, process_24)
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process24, process_24)
 
-    x_new_train = standardize(x_new_train)
-    x_new_test = standardize(x_new_test)
+
 
     indice_to_delete = [feature_names.index(item) for item in collumns_to_delete]
 
     indice_to_delete.sort()
 
+
     x_new_del_train = np.delete(x_new_train, indice_to_delete, 1)
     x_new_del_test = np.delete(x_new_test, indice_to_delete, 1)
 
+
     x_train_preprocess = np.hstack((x_new_del_train, x_append_train))
     x_test_preprocess = np.hstack((x_new_del_test, x_append_test))
+
+
+
+    ones_column_train = np.ones((x_train_preprocess.shape[0], 1))
+    x_train_preprocess = np.hstack((ones_column_train, x_train_preprocess))
+
+
+
+    ones_column_test = np.ones((x_test_preprocess.shape[0], 1))
+    x_test_preprocess = np.hstack((ones_column_test, x_test_preprocess))
 
     assert np.count_nonzero(np.isnan(x_train_preprocess)) == 0
     assert np.count_nonzero(np.isnan(x_test_preprocess)) == 0
@@ -138,51 +149,31 @@ def standardize(x):
     return x
 
 
-def generate_data():
-    datapath_train = "./dataset/"
 
-    x_train, x_test, y_train, train_ids, test_ids = helpers.load_csv_data(
-        datapath_train
-    )
-    data_path_names = "./dataset/x_train.csv"
-    feature_names = np.genfromtxt(
-        data_path_names, max_rows=2, delimiter=",", names=True
-    ).dtype.names
-    feature_names = feature_names[
-        1:
-    ]  ## TODO , j'ai l'impression qu'il faut faire ça vue que x_train a pas ID
-    columns = np.asarray(feature_names[0:])
-
-    return x_train, x_test, y_train, columns, feature_names
-
-
-def proccess_columns(
-    x_new_train,
-    x_new_test,
-    x_train,
-    x_test,
-    list_of_collumns_to_process,
-    processing_function,
-    feature_names,
-):
+def proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,list_of_collumns_to_process,processing_function):
     """
     Apply the processing function to the list of collumns
 
     Then standardize the input and store it in a new array
 
     Args :
-        TODO
-    Returns :
-        TODO
+        x_train (Numpy (N,D)) arary : input train data to preprocess
+        x_test (numpy (_,D)) array : input train data to preprocess
+        list_of_collumns_to_process : list of collumns to apply the processing function 
+        processing_function : function to be applied on each collumn
+
+        x_new_train (Numpy (N,D)) : train data after the processing
+        x_new_test (Numpy (_,D)) : test data after the processing
+
+        feature_names : List of all collumns in the datasets
+
 
     """
     for col in list_of_collumns_to_process:
         tab = [i for i, item in enumerate(feature_names) if item.find(col) != -1]
         if len(tab) > 0:
             indice = tab[0]
-            x_new_train[:, indice] = standardize(
-                processing_function(x_train[:, indice])
-            )
+            x_new_train[:, indice] = standardize(processing_function(x_train[:, indice]))
             x_new_test[:, indice] = standardize(processing_function(x_test[:, indice]))
 
 
@@ -248,7 +239,7 @@ def data_cleaning_NaN(x_train, columns, threshold=0.6):
     return collumns_to_delete
 
 
-def get_collumns_to_delete(oneHotp2):
+def get_collumns_to_delete(collumns_to_delete,oneHotp2):
     array_to_drop_Useless = ["_STATE","_PSU","SEQNO","CTELENUM","STATERES","CELLFON3","DISPCODE","PVTRESD1","CTELNUM1","CELLFON2",
                              "PVTRESD2","LANDLINE","HHADULT","NUMHHOL2","IMFVPLAC","WHRTST10","NUMADULT" , "NUMMEN" , 
                              "NUMWOMEN","RCSGENDR","RCSRLTN2","QSTVER","QSTLANG","MSCODE","_STSTR","_STRWT","_RAWRAKE",
@@ -277,12 +268,7 @@ def get_collumns_to_delete(oneHotp2):
                                   "_PAINDX1","_PAREC1",
                                   ]
 
-    collumns_to_delete = (
-        +array_to_drop_Useless
-        + array_to_drop_redundant
-        + array_to_drop_too_many_missing
-        + collumns_to_delete_from_one_hot
-    )
+    collumns_to_delete = collumns_to_delete+array_to_drop_Useless+ array_to_drop_redundant+ array_to_drop_too_many_missing+ collumns_to_delete_from_one_hot
     if oneHotp2:
         collumns_to_delete += collp2
 
@@ -321,6 +307,7 @@ def oneHotEncoding(feature_names, x_append_train, x_append_test, x_train, x_test
 
         encoded_test = one_hot_encoding_special(x_test[:, indice], num_max, skip)
         x_append_test = np.hstack((x_append_test, encoded_test))
+    return x_append_train ,x_append_test
 
 
 ########################################################################################################################################################################################################################
@@ -375,8 +362,11 @@ def process2bis(feature_names, x_append_train, x_append_test, x_train, x_test, o
 
             encoded_test = one_hot_encoding_special(x_test[:, indice], num_max, skip)
             x_append_test = np.hstack((x_append_test, encoded_test))
+        return x_append_train ,x_append_test
     else:
         proccess_columns(collp2, process_2)
+        return np.empty((x_train.shape[0], 0)),np.empty((x_train.shape[0], 0))
+    
 
 
 def process_HLTH(column):
@@ -932,7 +922,7 @@ def process_18(column):
 
 
     """
-
+    new_column = column.copy()
     new_column[new_column == 97] = 6
 
     new_column = column.copy()
@@ -962,7 +952,7 @@ def process_19(column):
 
     """
 
-    new_column = column
+    new_column = column.copy()
     for i in range(len(new_column)):
         if new_column[i] == 98:
             new_column[i] = 0
@@ -993,7 +983,7 @@ def process_20(column):
 
     """
 
-    new_column = column
+    new_column = column.copy()
     for i in range(len(new_column)):
         if new_column[i] == 88:
             new_column[i] = 0
@@ -1019,7 +1009,7 @@ def process_21(column):
         map Nan to the median values
 
     """
-    new_column = column
+    new_column = column.copy()
 
     filtered_elements = [x for x in new_column if 0 <= x <= 99999]
     median = np.median(filtered_elements)
@@ -1042,7 +1032,7 @@ def process_22(column):
         Map Nan to the median values
 
     """
-    new_column = column
+    new_column = column.copy()
 
     filtered_elements = [x for x in new_column if 0 <= x <= 128]
     median = np.median(filtered_elements)
@@ -1068,7 +1058,7 @@ def process_23(column):
 
     """
 
-    new_column = column
+    new_column = column.copy()
 
     filtered_elements = [x for x in new_column if 0 <= x <= 98999]
     median = np.median(filtered_elements)
@@ -1095,7 +1085,7 @@ def process_24(column):
 
     """
 
-    new_column = column
+    new_column = column.copy()
 
     filtered_elements = [x for x in new_column if 0 <= x <= 9999]
     median = np.median(filtered_elements)
