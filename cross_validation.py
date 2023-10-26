@@ -79,7 +79,7 @@ def cross_validation_linear_regression(y, x, sgd=False, k=5,  threshold=[-0.5,-0
     print(f"Average accuracy: {best_average_accuracy * 100:.2f} %")
     print("________________________")
     
-    return best_gamma, best_max_iters    
+    return best_max_iters, best_gamma   
 
 def cross_validation_least_squares(y, x, k=5, threshold=[-0.5,-0.4,-0.3,-0.2,-0.1,0,0.1]):
     
@@ -161,7 +161,7 @@ def cross_validation_ridge_regression(y, x, k=5, threshold=[-0.5,-0.4,-0.3,-0.2]
     
     return best_lambda,best_thresh
                   
-def cross_validation_logistic(y, x, k=5, reg=False, threshold=0.5, max_iters_list=[1000], gamma_list=[0.01, 0.1]):
+def cross_validation_logistic(y, x, k=5, reg=False, threshold=0.5, max_iters_list=[1000], gamma_list=[0.01]):
     best_gamma = None
     best_max_iters = None
     best_average_f1_score = -1
@@ -175,10 +175,10 @@ def cross_validation_logistic(y, x, k=5, reg=False, threshold=0.5, max_iters_lis
             average_accuracy = 0
             
             for _, (x_valid, y_valid, x_train, y_train) in enumerate(data_splits):
-                initial_w = -np.ones((x_train.shape[1], 1))
-                
+                initial_w = -np.ones(x_train.shape[1])
                 if(reg):
-                    w, _ = imp.reg_logistic_regression(y_train, x_train,1e-15, initial_w , max_iters, gamma)
+                    lambda_=1e-11
+                    w, _ = imp.reg_logistic_regression(y_train, x_train, lambda_, initial_w , max_iters, gamma)
                 else:
                     w, _ = imp.logistic_regression(y_train, x_train, initial_w , max_iters, gamma)
                 y_pred = x_valid.dot(w)
@@ -207,5 +207,5 @@ def cross_validation_logistic(y, x, k=5, reg=False, threshold=0.5, max_iters_lis
     print(f"Average accuracy: {best_average_accuracy * 100:.2f} %")
     print("________________________")
     
-    return best_max_iters, best_gamma         
+    return best_max_iters, best_gamma  
      
