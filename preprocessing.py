@@ -111,14 +111,18 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
     variables_for_process24 = ["_BMI5"]
     proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process24, process_24)
 
+    variables_for_process25 = ["BPHIGH4", "DIABETE3", "PREDIAB1"]
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process25,process_25)
+
+    variables_for_process26 = ["PERSDOC2"]
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process26,process_26)
 
 
-
-    variables_for_process25 = ["_STRWT","_RAWRAKE","_WT2RAKE"]
-    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process25, process_25)
-
+    variables_for_process_cont = ["_STRWT","_RAWRAKE","_WT2RAKE"]
+    proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,variables_for_process_cont, process_cont)
 
 
+    
 
     indice_to_delete = [feature_names.index(item) for item in collumns_to_delete]
 
@@ -129,6 +133,7 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
     x_new_del_test = np.delete(x_new_test, indice_to_delete, 1)
 
 
+    ## Normalize the data (We do the normalization here because oneHot encoded collumns don't need to be normalized )
 
     for i in range(x_new_del_train.shape[1]):
         mean_train =    x_new_del_train[:,i].mean()
@@ -140,18 +145,46 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
             x_new_del_test[:,i] = (x_new_del_test[:,i]-mean_test)/std_test
 
 
+    degree = 3 
+
+    N_train = x_new_del_train.shape[0]
+    D_train = x_new_del_train.shape[1]
+
+    N_test = x_new_del_test.shape[0]
+    D_test = x_new_del_test.shape[1]
+
+    x_new_del_train = build_poly(x_new_del_train,degree)
+    x_new_del_test = build_poly(x_new_del_test,degree)
+
+    x_new_del_train = x_new_del_train.reshape(N_train,degree*D_train)
+    x_new_del_test = x_new_del_test.reshape(N_test,degree*D_test)
+
+
+    ## Append all the oneHot encoded COllumns
+
     x_train_preprocess = np.hstack((x_new_del_train, x_append_train))
     x_test_preprocess = np.hstack((x_new_del_test, x_append_test))
 
 
+    ## Remove Collumns with 0 variance 
+    x_train_preprocess, to_delete = remove_zero_variance_columns(x_train_preprocess)
+    x_test_preprocess = np.delete(x_test_preprocess, to_delete, axis=1 )
 
+
+    
+    ## Remove Correalted COllumns 
+    x_train_preprocess, to_remove = remove_correlated_columns(x_train_preprocess)
+    x_test_preprocess = np.delete(x_test_preprocess, to_remove, axis=1)
+
+
+
+    # Adds a collumns of ones to encode a bias terms 
     ones_column_train = np.ones((x_train_preprocess.shape[0], 1))
     x_train_preprocess = np.hstack((ones_column_train, x_train_preprocess))
 
-
-
     ones_column_test = np.ones((x_test_preprocess.shape[0], 1))
     x_test_preprocess = np.hstack((ones_column_test, x_test_preprocess))
+
 
     assert np.count_nonzero(np.isnan(x_train_preprocess)) == 0
     assert np.count_nonzero(np.isnan(x_test_preprocess)) == 0
@@ -167,6 +200,22 @@ def standardize(x):
     return x
 
 
+
+def build_poly(x, degree):
+    """polynomial basis functions for input data x, for j=0 up to j=degree."""
+    # ***************************************************
+    # INSERT YOUR CODE HERE
+    # polynomial basis function: TODO
+    # this function should return the matrix formed
+    # by applying the polynomial basis to the input data
+    # ***************************************************
+    rep =[]
+    for xi in x:
+        temp =[]
+        for d in range(degree):
+            temp.append(pow(xi,d+1)) # We don't encode d=0 since we already add the 1's collumns 
+        rep.append(temp)
+    return np.array(rep)
 
 def proccess_columns(x_new_train,x_new_test,x_train,x_test,feature_names,list_of_collumns_to_process,processing_function):
     """
@@ -233,7 +282,7 @@ def one_hot_encoding_special(collumn, num_max, skip):
     return result
 
 
-def data_cleaning_NaN(x_train, columns, threshold=0.6):
+def data_cleaning_NaN(x_train, columns, threshold=0.75):
     """
         Return a list of collumn with Too many Nan values
 
@@ -255,6 +304,41 @@ def data_cleaning_NaN(x_train, columns, threshold=0.6):
             collumns_to_delete.append(columns[i])
 
     return collumns_to_delete
+
+def remove_zero_variance_columns(x) :
+    
+    variances = np.var(x, axis=0)
+    zero_variance_columns = np.where(variances == 0)[0]
+    x = np.delete(x, zero_variance_columns, axis=1)
+    
+    return x, zero_variance_columns
+
+
+def remove_correlated_columns(x , threshold: float = 0.9) :
+    """
+    Removes correlated columns, leaving only one column for each originally correlated sets of columns.
+
+    Arguments
+    ---------
+    x: np.ndarray
+        The matrix to be cleaned.
+
+    threshold: float
+        The maximum percentage of correlation allowed (default = 0.9).
+
+    Returns
+    -------
+    clean_x: np.ndarray
+        The cleaned matrix.
+
+    to_keep: nd.array
+        Boolean array of the kept columns.
+    """
+
+    assert 0 <= threshold <= 1
+    _, to_remove = np.where(np.triu(np.corrcoef(x.T), 1) > threshold)
+    to_remove = list(set(to_remove))
+    return np.delete(x, to_remove, axis=1), to_remove
 
 
 def get_collumns_to_delete(collumns_to_delete,oneHotp2):
@@ -1119,8 +1203,56 @@ def process_24(column):
 
     return new_column
 
-
 def process_25(column):
+    
+    """
+    Process for BPHIGH4, 
+    We consider 0 : don't have high blood pressure 
+    we consider 1 : you have high blood pressure
+    we consider 2 : to have borderline high which is even more than high blood pressure 
+    - If told yes only during pregnancy that means no since it's normal 
+   Same process but with DIABETE3, PREDIAB1, which corresponds to diabetes
+   
+   """
+    new_column = column.copy()
+    new_column[new_column==2]=0
+    new_column[new_column==3]=0
+    new_column[new_column==4]=2
+            
+    filtered_elements = [x for x in new_column if 0 <= x <= 2]        
+    median = np.median(filtered_elements)
+        
+    for i in range(len(new_column)):
+        if ((new_column[i] == 7)  or (new_column[i] == 9) or np.isnan(new_column[i])):
+            new_column[i] = median
+            
+    return new_column
+
+
+def process_26(column):
+    
+    """
+    Process for PERSDOC2, 
+    We consider 0 : don't have a care provider, so 3 becomes 0 
+    we consider 1 : you one
+    we consider 2 : you have two
+   """
+    
+    new_column = column.copy()
+
+    new_column[new_column==3]=0
+
+    filtered_elements = [x for x in new_column if 0 <= x <= 6]
+    median = np.median(filtered_elements)
+        
+    for i in range(len(new_column)):
+        if ((new_column[i] == 7) or (new_column[i] == 9) or np.isnan(new_column[i])): # DON'T KNOW / REFUSED 
+            new_column[i] = median
+            
+    return new_column
+
+
+def process_cont(column):
     """
     Preprocess continues data 
     

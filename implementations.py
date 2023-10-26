@@ -65,7 +65,7 @@ def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
 
 def calculate_mse(e):
     """Calculate the mse for vector e."""
-    return 1 / 2 * np.mean(e**2)
+    return 1. / 2. * np.mean(e**2)
 
 
 def compute_loss(y, tx, w):
@@ -96,7 +96,7 @@ def compute_gradient(y, tx, w):
     """
 
     e = y - np.dot(tx, w)
-    return -1 / (y.shape[0]) * np.dot(tx.T, e), e
+    return -1. / (y.shape[0]) * np.dot(tx.T, e), e
 
 
 def compute_stoch_gradient(y, tx, w):
@@ -197,16 +197,14 @@ def least_squares(y, tx):
     a = tx.T.dot(tx)
     b = tx.T.dot(y)
 
-    if(np.linalg.det(a)==0):
-        a_pseudo_inv = np.linalg.pinv(a)
-        w = a_pseudo_inv.dot(b)
-        mse = compute_loss(y, tx, w)
-        return w, mse
-    
 
-    w = np.linalg.solve(a, b)
+    a_pseudo_inv = np.linalg.pinv(a)
+    w = a_pseudo_inv.dot(b)
     mse = compute_loss(y, tx, w)
     return w, mse
+    
+
+
 
 
 def ridge_regression(y, tx, lambda_):
