@@ -275,5 +275,4 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         loss: scalar number
 
     """
-    print("coucou2")
     return Logistics.logistic_regression(y, tx, initial_w, max_iters, gamma)

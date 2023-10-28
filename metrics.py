@@ -20,6 +20,26 @@ def calculate_parameters(y_test, y_pred):
     
     return tp, tn, fp, fn
 
+def calculate_parameters_logistic(y_test, y_pred):
+    """Calculates the parameters for the metrics
+    
+    Args:
+        y_test: test labels
+        y_pred: predicted labels
+        
+    Returns:
+        tp: true positive
+        tn: true negative
+        fp: false positive
+        fn: false negative
+    """
+    tp = np.sum((y_test == 1) & (y_pred == 1))
+    tn = np.sum((y_test == 0) & (y_pred == 0))
+    fp = np.sum((y_test == 0) & (y_pred == 1))
+    fn = np.sum((y_test == 1) & (y_pred == 0))
+    
+    return tp, tn, fp, fn
+
 
 def precision(tp, fp):
     """Calculates the precision score, which is the proportion of positive identifications that are actually correct
