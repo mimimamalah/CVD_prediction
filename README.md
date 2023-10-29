@@ -17,11 +17,15 @@ The data is composed of 321 features and 1 target variable. The target variable 
 
 - `helpers.py` : contains helper functions to load the data and create the submission file.
 
+- `Logistics.py` : contains implementation of the 2 mandatory functions related to Logistics regression
+
+- `preprocessing.py` : contains the functions to preprocess the data : remove NaN, encode categorical values, perform feature expension.
+
+- `run.ipynb` : contains the main runnable function. Performs the cross validation and output the csv file
+
+
 # Run the code:
 
 In order to run the code, you need to download the data to the `dataset` folder.
 
-Then, you can run the `run.py` file to generate the submission file using the following command:
-```python
-python run.py
-```
+In order to generate the csv Submission file, run the first 4 cells (data importation and preprocessing) , and the last cell (# To create CSV , EXECUTE _/5) 
