@@ -18,7 +18,7 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
     oneHotp2 = True
 
     
-    collumns_to_delete = data_cleaning_NaN(x_train, columns, threshold=0.75)
+    collumns_to_delete = data_cleaning_NaN(x_train, columns, threshold=0.6)
     collumns_to_delete += get_collumns_to_delete(collumns_to_delete,oneHotp2)
 
     x_new_train = np.copy(x_train)
@@ -184,7 +184,19 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
 
     ones_column_test = np.ones((x_test_preprocess.shape[0], 1))
     x_test_preprocess = np.hstack((ones_column_test, x_test_preprocess))
+    
+    #Calculate the correlations between x_train_preprocess
+    correlations = np.corrcoef(x_train_preprocess, y_train, rowvar=False)[:-1, -1]
 
+    #Determine the number of features to remove (10% of total features)
+    num_features_to_remove = int(0.1 * x_train_preprocess.shape[1])
+    
+    #Identify the indices of the least correlated features to remove
+    indices_to_remove = np.argpartition(np.abs(correlations), num_features_to_remove)[:num_features_to_remove]
+
+    # Step 4: Remove the least correlated features
+    x_train_preprocess = np.delete(x_train_preprocess, indices_to_remove, axis=1)
+    x_test_preprocess = np.delete(x_test_preprocess, indices_to_remove, axis=1)
 
     assert np.count_nonzero(np.isnan(x_train_preprocess)) == 0
     assert np.count_nonzero(np.isnan(x_test_preprocess)) == 0
