@@ -3,7 +3,6 @@ import implementations as imp
 import metrics
 import Logistics
 
-    
 def split_data_kfold(y, x, k):
     """Splits the data into k folds for cross validation
     
@@ -31,8 +30,7 @@ def split_data_kfold(y, x, k):
         data_splits.append((x_valid, y_valid, x_train, y_train, ))
         
     return data_splits
-    
-    
+
 def cross_validation_linear_regression(y, x, sgd=False, k=5,  threshold=[-0.5,-0.4], max_iters_list=[1000], gamma_list=[0.01, 0.1, 1, 10]):
     best_gamma = None
     best_max_iters = None
@@ -46,7 +44,7 @@ def cross_validation_linear_regression(y, x, sgd=False, k=5,  threshold=[-0.5,-0
                 average_accuracy = 0
                 
                 for _, (x_valid, y_valid, x_train, y_train) in enumerate(data_splits):
-                    initial_w = -np.ones((x_train.shape[1], 1))
+                    initial_w = -np.ones(x_train.shape[1],)
                     
                     if(sgd):
                         w, _ = imp.mean_squared_error_sgd(y_train, x_train, initial_w, max_iters, gamma)
@@ -80,7 +78,7 @@ def cross_validation_linear_regression(y, x, sgd=False, k=5,  threshold=[-0.5,-0
     print(f"Average accuracy: {best_average_accuracy * 100:.2f} %")
     print("________________________")
     
-    return best_max_iters, best_gamma   
+    return best_max_iters, best_gamma, best_thresh
 
 def cross_validation_least_squares(y, x, k=5, threshold=[-0.5,-0.4,-0.3,-0.2,-0.1,0,0.1]):
     
@@ -106,12 +104,12 @@ def cross_validation_least_squares(y, x, k=5, threshold=[-0.5,-0.4,-0.3,-0.2,-0.
         average_f1_score /= k # Calculate the average F1 score for the current lambda value
         average_accuracy /= k # Calculate the average accuracy for the current lambda value
         
-                # Check if the current lambda value has the highest F1 score
+        # Check if the current lambda value has the highest F1 score
         if average_f1_score > best_average_f1_score:
             best_average_f1_score = average_f1_score
             best_average_accuracy = average_accuracy
             best_thresh = thresh
-        # Print metrics for the fold with the highest F1 Score
+    # Print metrics for the fold with the highest F1 Score
     print(f"Best threshold value is : {best_thresh}")
     print("________________________")
     print(f"Average F1 score: {best_average_f1_score*100:.2f} %")
@@ -119,8 +117,6 @@ def cross_validation_least_squares(y, x, k=5, threshold=[-0.5,-0.4,-0.3,-0.2,-0.
     print("________________________")
     return best_thresh
     
-
-        
 def cross_validation_ridge_regression(y, x, k=5, threshold=[-0.5,-0.4,-0.3,-0.2], lambda_values=[0.01, 0.1, 1, 10, 100]):
     best_lambda = None
     best_average_f1_score = -1
@@ -138,7 +134,7 @@ def cross_validation_ridge_regression(y, x, k=5, threshold=[-0.5,-0.4,-0.3,-0.2]
                 y_pred_discrete = np.where(y_pred >= thresh, 1, -1)    
             
                 # Calculate evaluation metrics
-                tp, tn, fp, fn = metrics.calculate_pacalculate_parameters_logisticrameters(y_valid, y_pred_discrete)
+                tp, tn, fp, fn = metrics.calculate_parameters_logistic(y_valid, y_pred_discrete)
                 average_accuracy += metrics.accuracy(tp, tn, fp, fn)
                 average_f1_score += metrics.f1_score(tp, fp, fn)
                 
@@ -160,7 +156,7 @@ def cross_validation_ridge_regression(y, x, k=5, threshold=[-0.5,-0.4,-0.3,-0.2]
     print(f"Average accuracy: {best_average_accuracy*100:.2f} %")
     print("________________________")
     
-    return best_lambda,best_thresh
+    return best_lambda, best_thresh
                   
 def cross_validation_logistic(y, x, k=5, reg=False, thresholds=[0.5,0.1,0.2], max_iters_list=[1000], gamma_list=[0.01]):
     best_gamma = None
@@ -221,5 +217,5 @@ def cross_validation_logistic(y, x, k=5, reg=False, thresholds=[0.5,0.1,0.2], ma
     print(f"Average accuracy: {best_average_accuracy * 100:.2f} %")
     print("________________________")
     
-    return best_max_iters, best_gamma,best_Threshold
+    return best_max_iters, best_gamma, best_Threshold
      

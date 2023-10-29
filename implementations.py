@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib as plt
 import Logistics
 
 
@@ -96,7 +95,7 @@ def compute_gradient(y, tx, w):
     """
 
     e = y - np.dot(tx, w)
-    return -1 / (y.shape[0]) * np.dot(tx.T, e), e
+    return (-1 / (y.shape[0])) * np.dot(tx.T, e)
 
 
 def compute_stoch_gradient(y, tx, w):
@@ -136,8 +135,8 @@ def mean_squared_error_gd(y, tx, initial_w, max_iters, gamma):
     w = initial_w.reshape(-1,1)
     y = y.reshape(-1,1)
 
-    for n_iter in range(max_iters):
-        grad, err = compute_gradient(y, tx, w)
+    for _ in range(max_iters):
+        grad = compute_gradient(y, tx, w)
 
         w = w - gamma * grad
 
@@ -196,15 +195,11 @@ def least_squares(y, tx):
     """
     a = tx.T.dot(tx)
     b = tx.T.dot(y)
-
-    if(np.linalg.det(a)==0):
-        a_pseudo_inv = np.linalg.pinv(a)
-        w = a_pseudo_inv.dot(b)
-        mse = compute_loss(y, tx, w)
-        return w, mse
     
-
-    w = np.linalg.solve(a, b)
+    a_pseudo_inv = np.linalg.pinv(a)
+    w = a_pseudo_inv.dot(b)
+    
+    # w = np.linalg.solve(a, b)
     mse = compute_loss(y, tx, w)
     return w, mse
 
@@ -227,7 +222,7 @@ def ridge_regression(y, tx, lambda_):
     w = np.linalg.solve(a, b)
     loss = compute_loss(
         y, tx, w
-    )  # Moreover, the loss returned by the regularized methods (ridge regression and reg logistic regression) should not include the penalty term.
+    )  #The loss returned by the regularized methods (ridge regression and reg logistic regression) should not include the penalty term.
 
     return w, loss
 
