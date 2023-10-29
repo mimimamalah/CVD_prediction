@@ -18,7 +18,7 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
     oneHotp2 = True
 
     
-    collumns_to_delete = data_cleaning_NaN(x_train, columns, threshold=0.6)
+    collumns_to_delete = data_cleaning_NaN(x_train, columns, threshold=0.75)
     collumns_to_delete += get_collumns_to_delete(collumns_to_delete,oneHotp2)
 
     x_new_train = np.copy(x_train)
@@ -396,8 +396,9 @@ def oneHotEncoding(feature_names, x_append_train, x_append_test, x_train, x_test
                                        ("PREDIAB1",3,[7,9]),("IMFVPLAC",11,[77,99]),("WHRTST10",9,[77,99]),("_DUALUSE",2,[9]),("_AGE_G",6,[]),("_LMTSCL1",4,[9]),
                                        ("_RFSEAT3",2,[9]),("_FLSHOT6",2,[9]),("_PNEUMO2",2,[9])]
 
-    for col in collumn_to_oneHotEncode:
+    for col in collumn_to_oneHotEncode:        
         indice = [i for i, item in enumerate(feature_names) if item.find(col) != -1][0]
+
         encoded_train = one_hot_encoding(x_train[:, indice])
         x_append_train = np.hstack((x_append_train, encoded_train))
 
@@ -442,7 +443,7 @@ def process_2(column):
     return new_column
 
 
-def process2bis(feature_names, x_append_train, x_append_test, x_train, x_test, oneHot=True):
+def process2bis(feature_names, x_append_train, x_append_test, x_train, x_test,oneHot=True):
     """
         Process data with
         1 = Yes

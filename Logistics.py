@@ -45,10 +45,9 @@ def calculate_loss(y, tx, w):
     Returns:
         a non-negative loss
     """
-    # print("x shape : ", tx.shape)
-    # print("w shape : ", w.shape)
     assert y.shape[0] == tx.shape[0]
     assert tx.shape[1] == w.shape[0]
+
 
     N = y.shape[0]
     inner_prod = tx.dot(w)
