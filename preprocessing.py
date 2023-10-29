@@ -18,7 +18,7 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
     oneHotp2 = True
 
     
-    collumns_to_delete = data_cleaning_NaN(x_train, columns, threshold=0.75)
+    collumns_to_delete = data_cleaning_NaN(x_train, columns, threshold=0.6)
     collumns_to_delete += get_collumns_to_delete(collumns_to_delete,oneHotp2)
 
     x_new_train = np.copy(x_train)
@@ -184,8 +184,23 @@ def dataPreprocess(x_train, x_test, y_train, columns, feature_names):
 
     ones_column_test = np.ones((x_test_preprocess.shape[0], 1))
     x_test_preprocess = np.hstack((ones_column_test, x_test_preprocess))
+    
+    
+    
+    #Calculate the correlations between x_train_preprocess
+    correlations = np.corrcoef(x_train_preprocess, y_train, rowvar=False)[:-1, -1]
 
+    #Determine the number of features to remove (10% of total features)
+    num_features_to_remove = int(0.1 * x_train_preprocess.shape[1])
+    
+    #Identify the indices of the least correlated features to remove
+    indices_to_remove = np.argpartition(np.abs(correlations), num_features_to_remove)[:num_features_to_remove]
 
+    # Step 4: Remove the least correlated features
+    x_train_preprocess = np.delete(x_train_preprocess, indices_to_remove, axis=1)
+    x_test_preprocess = np.delete(x_test_preprocess, indices_to_remove, axis=1)
+
+    
     assert np.count_nonzero(np.isnan(x_train_preprocess)) == 0
     assert np.count_nonzero(np.isnan(x_test_preprocess)) == 0
     return x_train_preprocess, x_test_preprocess, y_train
@@ -398,21 +413,19 @@ def oneHotEncoding(feature_names, x_append_train, x_append_test, x_train, x_test
 
     for col in collumn_to_oneHotEncode:        
         indice = [i for i, item in enumerate(feature_names) if item.find(col) != -1][0]
-        if len(np.where(np.isnan(x_train[:, indice]))[0]) <= x_train.shape[0] * 0.75 :
-            encoded_train = one_hot_encoding(x_train[:, indice])
-            x_append_train = np.hstack((x_append_train, encoded_train))
+        encoded_train = one_hot_encoding(x_train[:, indice])
+        x_append_train = np.hstack((x_append_train, encoded_train))
 
-            encoded_test = one_hot_encoding(x_test[:, indice])
-            x_append_test = np.hstack((x_append_test, encoded_test))
+        encoded_test = one_hot_encoding(x_test[:, indice])
+        x_append_test = np.hstack((x_append_test, encoded_test))
 
     for col, num_max, skip in collumn_to_oneHotencode_special:
-        indice = [i for i, item in enumerate(feature_names) if item.find(col) != -1][0]
-        if len(np.where(np.isnan(x_train[:, indice]))[0]) <= x_train.shape[0] * 0.75 :
-            encoded_train = one_hot_encoding_special(x_train[:, indice], num_max, skip)
-            x_append_train = np.hstack((x_append_train, encoded_train))
+        indice = [i for i, item in enumerate(feature_names) if item.find(col) != -1][0]        
+        encoded_train = one_hot_encoding_special(x_train[:, indice], num_max, skip)
+        x_append_train = np.hstack((x_append_train, encoded_train))
 
-            encoded_test = one_hot_encoding_special(x_test[:, indice], num_max, skip)
-            x_append_test = np.hstack((x_append_test, encoded_test))
+        encoded_test = one_hot_encoding_special(x_test[:, indice], num_max, skip)
+        x_append_test = np.hstack((x_append_test, encoded_test))
     return x_append_train ,x_append_test
 
 
