@@ -141,7 +141,6 @@ def mean_squared_error_gd(y, tx, initial_w, max_iters, gamma):
         w = w - gamma * grad
 
     loss = compute_loss(y, tx, w)
-    print("ici",w.shape)
     return w, loss
 
 

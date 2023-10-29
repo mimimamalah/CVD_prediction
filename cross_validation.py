@@ -134,7 +134,7 @@ def cross_validation_ridge_regression(y, x, k=5, threshold=[-0.5,-0.4,-0.3,-0.2]
                 y_pred_discrete = np.where(y_pred >= thresh, 1, -1)    
             
                 # Calculate evaluation metrics
-                tp, tn, fp, fn = metrics.calculate_parameters_logistic(y_valid, y_pred_discrete)
+                tp, tn, fp, fn = metrics.calculate_parameters(y_valid, y_pred_discrete)
                 average_accuracy += metrics.accuracy(tp, tn, fp, fn)
                 average_f1_score += metrics.f1_score(tp, fp, fn)
                 
@@ -187,14 +187,8 @@ def cross_validation_logistic(y, x, k=5, reg=False, thresholds=[0.5,0.1,0.2], ma
                 
                     # Calculate evaluation metrics
                     tp, tn, fp, fn = metrics.calculate_parameters_logistic(y_valid, y_pred_discrete)
-                    print(tp,tn,fp,fn)
-                    f1 = metrics.f1_score(tp, fp, fn)
-                    acc = metrics.accuracy(tp, tn, fp, fn)
-                    print(thresh)
-                    print("f1 : ",f1)
-                    print("acc : ",acc)
-                    average_f1_score +=f1
-                    average_accuracy += acc
+                    average_f1_score += metrics.f1_score(tp, fp, fn)
+                    average_accuracy += metrics.accuracy(tp, tn, fp, fn)
                     
                     
                 average_f1_score /= k # Average F1 score for the current hyperparameters
