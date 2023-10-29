@@ -17,3 +17,5 @@ Submission_logistic_csv
 Submission_logistic.csv
 Submission_ridge_with_threshold.csv
 Submission_ridge_with_threshold.csv
+final_Submission_0.75.csv
+reg_logistic-0.5lambda-0.4threshold.csv
