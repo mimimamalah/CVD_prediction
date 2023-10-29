@@ -172,6 +172,7 @@ def cross_validation_logistic(y, x, k=5, reg=False, thresholds=[0.5,0.1,0.2], ma
                     average_f1_score = 0
                     average_accuracy = 0
                     for _, (x_valid, y_valid, x_train, y_train) in enumerate(data_splits):
+                        np.random.seed(0)
                         initial_w = np.random.normal(0,1,x_train.shape[1])
                         if(reg):
                             w, _ = imp.reg_logistic_regression(y_train, x_train, lambda_, initial_w , max_iters, gamma)
