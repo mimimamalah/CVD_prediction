@@ -132,8 +132,8 @@ def mean_squared_error_gd(y, tx, initial_w, max_iters, gamma):
         w: The lastparameter w of shape (D,1),
     """
 
-    w = initial_w.reshape(-1,1)
-    y = y.reshape(-1,1)
+    w = initial_w
+    y = y
 
     for _ in range(max_iters):
         grad = compute_gradient(y, tx, w)
@@ -141,6 +141,7 @@ def mean_squared_error_gd(y, tx, initial_w, max_iters, gamma):
         w = w - gamma * grad
 
     loss = compute_loss(y, tx, w)
+    print("ici",w.shape)
     return w, loss
 
 
@@ -162,8 +163,8 @@ def mean_squared_error_sgd(y, tx, initial_w, max_iters, gamma):
         w: The lastparameter w of shape (2, ),
     """
 
-    w = initial_w.reshape(-1,1)
-    y = y.reshape(-1,1)
+    w = initial_w
+    y = y
     loss = compute_loss(y, tx, w)
 
     for n_iter in range(max_iters):

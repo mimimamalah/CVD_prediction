@@ -123,11 +123,10 @@ def learning_by_gradient_descent(y, tx, w, gamma):
 
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
-    #print("initial w : ",initial_w)
     threshold = 1e-8
     losses = []
-    w = initial_w.reshape(-1,1)
-    y = y.reshape(-1,1)
+    w = initial_w
+    y = y
     loss = calculate_loss(y, tx, w)
     # start the logistic regression
     for iter in range(max_iters):
@@ -150,8 +149,8 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     threshold = 1e-8
     losses = []
 
-    w = initial_w.reshape(-1,1)
-    y = y.reshape(-1,1)
+    w = initial_w
+    y = y
     # start the logistic regression
     for iter in range(max_iters):
         # get loss and update w.
